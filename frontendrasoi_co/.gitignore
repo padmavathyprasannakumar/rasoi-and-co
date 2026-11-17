@@ -1,0 +1,26 @@
+# ---- Secrets: never upload ----
+.env
+.env.local
+*.local
+*secret*
+*.key
+
+# ---- Local data ----
+db.sqlite3
+db_backup*.sqlite3
+data.json
+media/
+staticfiles/
+
+# ---- Python ----
+venv/
+__pycache__/
+*.pyc
+
+# ---- React / Node ----
+node_modules/
+dist/
+
+# ---- Editor / system ----
+.vscode/
+.DS_Store

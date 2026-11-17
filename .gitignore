@@ -1,0 +1,17 @@
+.env
+.env.local
+*.local
+*secret*
+*.key
+db.sqlite3
+db_backup*.sqlite3
+data.json
+media/
+staticfiles/
+venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.vscode/
+.DS_Store
