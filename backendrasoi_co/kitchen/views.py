@@ -1,9 +1,9 @@
-import logging
 """
 REST API for Rasoi & Co. — every response is JSON under /api/.
 Public content is read-only (edit it in Django admin); cart, wishlist, addresses,
 orders and reviews are per-user and need a JWT access token.
 """
+import logging
 from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -248,7 +248,7 @@ class AIChatView(APIView):
             history=request.data.get('history') or [],
             assistant_slug=request.data.get('assistant'),
             language=request.data.get('language', 'en'),
-                        user=request.user,
+            user=request.user,
             context_products=request.data.get('context_products') or [],
         )
         ctx = {'request': request}
@@ -744,7 +744,7 @@ class RazorpayCreateOrderView(APIView):
             'receipt': order.order_number,
             'notes': {'order_number': order.order_number, 'email': order.email},
         })
-                order.razorpay_order_id = rp_order['id']
+        order.razorpay_order_id = rp_order['id']
         order.save(update_fields=['razorpay_order_id'])
         site = SiteSettings.load()
         # Razorpay asks for OTP on this number: use the customer's latest profile mobile, else the delivery mobile
