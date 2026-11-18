@@ -109,7 +109,7 @@ export default function ProductDetail() {
                 <Stars value={p.rating_avg} size={15} /> <span>{p.rating_avg} · {p.review_count} reviews</span>
               </a>
             )}
-            {(p.badge_text || p.tag_label) && <span className="pdp-tag">{p.badge_text || p.tag_label}</span>}
+           const label = product.badge_text || (product.is_new ? 'NEW' : product.tag ? product.tag_label : '');
 
             <Price price={price} mrp={mrp} size="lg" showTax />
             {p.short_description && <p className="pdp-short">{p.short_description}</p>}
