@@ -911,7 +911,7 @@ class ContactMessageView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ContactMessageSerializer
 
-        def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         msg = serializer.save()
@@ -948,4 +948,3 @@ def notify_store_of_contact(msg):
         ).send(fail_silently=False)
     except Exception as exc:  # the message is still saved in admin
         logging.getLogger(__name__).error('Contact email failed: %s', exc)
-
