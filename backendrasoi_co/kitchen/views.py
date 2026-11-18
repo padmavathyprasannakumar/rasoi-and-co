@@ -746,7 +746,10 @@ class RazorpayCreateOrderView(APIView):
         })
         order.razorpay_order_id = rp_order['id']
         order.save(update_fields=['razorpay_order_id'])
-        site = SiteSettings.load()
+                site = SiteSettings.load()
+        # Razorpay asks for OTP on this number: use the customer's latest profile mobile, else the delivery mobile
+        profile = getattr(request.user, 'profile', None)
+        contact_mobile = (getattr(profile, 'mobile', '') or order.mobile or '').strip()
         return Response({
             'key_id': settings.RAZORPAY_KEY_ID,
             'razorpay_order_id': rp_order['id'],
