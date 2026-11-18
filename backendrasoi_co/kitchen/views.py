@@ -911,7 +911,41 @@ class ContactMessageView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ContactMessageSerializer
 
-    def create(self, request, *args, **kwargs):
-        super().create(request, *args, **kwargs)
+        def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        msg = serializer.save()
+        notify_store_of_contact(msg)
         return Response({'detail': "Thank you! We'll get back to you within 24 hours."}, status=status.HTTP_201_CREATED)
+
+
+def notify_store_of_contact(msg):
+    """Email the store (Site settings → Email) about a new Contact us message. Never breaks the form."""
+    from django.core.mail import EmailMessage
+
+    to_email = SiteSettings.load().email
+    if not to_email:
+        return
+    data = {f: getattr(msg, f, '') for f in ('name', 'email', 'mobile', 'phone', 'subject', 'message')}
+    body = '\n'.join([
+        'New message from the Contact us page',
+        '',
+        f"Name: {data['name']}",
+        f"Email: {data['email']}",
+        f"Mobile: {data['mobile'] or data['phone'] or '-'}",
+        f"Subject: {data['subject'] or '-'}",
+        '',
+        str(data['message'] or ''),
+        '',
+        'Reply to this email to answer the customer directly.',
+    ])
+    try:
+        EmailMessage(
+            subject=f"[Rasoi & Co.] Contact: {data['subject'] or data['name']}",
+            body=body,
+            to=[to_email],
+            reply_to=[data['email']] if data['email'] else None,
+        ).send(fail_silently=False)
+    except Exception as exc:  # the message is still saved in admin
+        logging.getLogger(__name__).error('Contact email failed: %s', exc)
 
