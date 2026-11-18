@@ -1,3 +1,4 @@
+import logging
 """
 REST API for Rasoi & Co. — every response is JSON under /api/.
 Public content is read-only (edit it in Django admin); cart, wishlist, addresses,
