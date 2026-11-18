@@ -758,7 +758,8 @@ class RazorpayCreateOrderView(APIView):
             'order_number': order.order_number,
             'name': site.store_name,
             'description': f'Order {order.order_number}',
-            'prefill': {'name': order.full_name, 'email': order.email, 'contact': f'+91{order.mobile}'},
+                        'prefill': {'name': order.full_name, 'email': request.user.email or order.email,
+                        'contact': f'+91{contact_mobile}' if contact_mobile else ''},
             'theme_color': '#B87333',
         })
 
